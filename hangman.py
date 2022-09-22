@@ -5,54 +5,65 @@ import string
 
 def get_random_word():
     word = random.choice(words)
-    print(word)
     return word
 
-def print_guess(list_guess):
+def print_guess(guess):
+    list_guess = list(guess)
     guess = ' '.join(list_guess)
     print(f'Word: {guess}')
 
-def guess_letter(list_guess, word, alphabet):
-    result = False
+def guess_letter():
     letter = input('Guess letter: ')
-    print(alphabet)
-    alphabet = alphabet.replace(letter.upper(), ' ')
-    print(alphabet)
-    if letter in word:
-        result = True
-        for i in range(len(word)):
-            if word[i] == letter:
-                list_guess[i] = letter
-    print_guess(list_guess)
-    return result
+    return letter
 
 def get_letter_index_in_word(letter, word):
     '''
-    Function returns index of letter in word. 
-    If letter doesn't exist in word fuunction returns False.
+    Function returns a letter's indexes in word.
     '''
-    pass
+
+    indexes = list()
+    if letter in word:
+        for i in range(len(word)):
+            if word[i] == letter:
+                indexes.append(i)
+    return indexes
+
+def change_guess_string(letter, guess, indexes):
+    guess_list = list(guess)
+    for i in indexes:
+        guess_list[i] = letter
+    
+    return ''.join(guess_list)
 
 def print_hangman(lifes):
-    print(HANGMAN_BODY[len(HANGMAN_BODY) - 1 - lifes])
-
-
+    print(HANGMAN_BODY[len(HANGMAN_BODY) - lifes])
 
 def main():
     alphabet = string.ascii_uppercase
+    lifes = 7
     
     word = get_random_word()
     guess = '_' * len(word)
-    list_guess = list(guess)
-    print_guess(list_guess)
+    print_hangman(lifes)
+    print_guess(guess)
 
-    lifes = 7
-    while '_' in list_guess and lifes > 0:
-        print(f'Available letters: {alphabet}')
-        if guess_letter(list_guess, word, alphabet) == False:
-            lifes -= 1
-            print('lifes', lifes)
+    while '_' in guess and lifes > 0:
+        print("Letters: ", alphabet)
+        letter = guess_letter()
+        if letter.upper() in alphabet:
+            alphabet = alphabet.replace(letter.upper(), " ")
+            indexes = get_letter_index_in_word(letter, word)
+            if len(indexes) == 0:
+                lifes -= 1
+            guess = change_guess_string(letter, guess, indexes)
             print_hangman(lifes)
-    print("GAME OVER")
+            print_guess(guess)
+        else:
+            print("Wrong letter")
+
+    if lifes > 0:
+        print("Game over. You are a winner")
+    else:
+        print(f"Game over (word = {word})")
 
 main()
