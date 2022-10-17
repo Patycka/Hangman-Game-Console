@@ -3,18 +3,14 @@ from hangman_body import*
 import random
 import string
 
-def get_random_word():
-    word = random.choice(words)
-    return word
 
 def print_guess(guess):
-    list_guess = list(guess)
-    guess = ' '.join(list_guess)
+    '''
+    Function prints underscores (number of underscores the same as len of a guess) and
+    adds space between them.
+    '''
+    guess = guess.replace('', ' ')
     print(f'Word: {guess}')
-
-def guess_letter():
-    letter = input('Guess letter: ')
-    return letter
 
 def get_letter_index_in_word(letter, word):
     '''
@@ -42,14 +38,14 @@ def main():
     alphabet = string.ascii_uppercase
     lifes = 7
     
-    word = get_random_word()
+    word = random.choice(words)
     guess = '_' * len(word)
     print_hangman(lifes)
     print_guess(guess)
 
     while '_' in guess and lifes > 0:
         print("Letters: ", alphabet)
-        letter = guess_letter()
+        letter = input('Guess letter: ')
         if letter.upper() in alphabet:
             alphabet = alphabet.replace(letter.upper(), " ")
             indexes = get_letter_index_in_word(letter, word)
